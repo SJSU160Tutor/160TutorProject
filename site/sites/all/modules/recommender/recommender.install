@@ -1,0 +1,285 @@
+<?php
+
+/**
+ * @file
+ * Installation file for the Recommender API module.
+ * Note: Not compatible with 6.x releases. Please uninstall 6.x releases before installing the D7 release.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function recommender_schema() {
+  $schema = array(
+    // table to save recommender_info()
+    'recommender_app' => array(
+      'description' => 'Applications that use recommender API and their default parameters.',
+      'fields' => array(
+        'id' => array(
+          'description' => 'Unique id',
+          'type' => 'serial',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'name' => array(
+          'description' => 'The application that uses the recommender API',
+          'type' => 'varchar',
+          'not null' => TRUE,
+          'length' => 60,
+        ),
+        'title' => array(
+          'description' => 'The human readable title of the application that uses the recommender API',
+          'type' => 'varchar',
+          'not null' => TRUE,
+          'length' => 255,
+          'default' => '',
+        ),
+        'cron' => array(
+          'description' => 'Seconds to wait before the next cron.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => FALSE,
+        ),
+        'execution_id' => array(
+          'description' => 'The id of async_command to be executed.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => FALSE,
+        ),
+        'params' => array(
+          'description' => 'The default parameters for the recommender API for this app, using PHP serialize',
+          'type' => 'text',
+          'not null' => FALSE,
+        ),
+        'data' => array(
+          'description' => 'Storage of recommender app serialization data.',
+          'type' => 'blob',
+          'not null' => FALSE,
+        ),
+      ),
+      'primary key' => array('id'),
+      'unique keys' => array(
+        'app_name' => array('name'),
+      ),
+      'foreign keys' => array(
+        'execution_id' => array(
+          'table' => 'async_command',
+          'columns' => array('execution_id' => 'id'),
+        ),
+      ),
+    ),
+
+    // table to save similarity scores
+    'recommender_similarity' => array(
+      'description' => 'This is the main table to save similarity data. The structure is the same to prediction table, but stores different data',
+      'fields' => array(
+        // this id might be redundant.
+        'id' => array(
+          'description' => 'Unique index for each similarity pair',
+          'type' => 'serial',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'app_id' => array(
+          'description' => 'This field distinguishes different applications.',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'source_eid' => array(
+          'description' => 'The first source entity_id. The type is the same to the target entity',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'target_eid' => array(
+          'description' => 'The target entity_id. The type is the same to the source entity',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'score' => array(
+          'type' => 'float',
+          'size' => 'normal',
+          'not null' => FALSE,
+          'description' => 'Similarity score. The bigger, the more similar',
+        ),
+        'updated' => array(
+          'description' => 'The Unix timestamp this similarity is last changed',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'primary key' => array('id'),
+      'foreign keys' => array(
+        'app_id' => array(
+          'table' => 'recommender_app',
+          'columns' => array('app_id' => 'id'),
+        ),
+      ),
+      // note that this is not unique indexes.
+      'indexes' => array(
+        'index_key' => array('app_id', 'source_eid', 'target_eid'),
+        //'score' => array('score'),
+      ),
+    ),
+
+
+    // table to save predictions
+    'recommender_prediction' => array(
+      'description' => 'This is the main table to save prediction data. The structure is the same to similarity table, but here source and target are different type of entities',
+      'fields' => array(
+        // this id might be redundant.
+        'id' => array(
+          'description' => 'Unique index for each prediction link',
+          'type' => 'serial',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'app_id' => array(
+          'description' => 'This field distinguishes different recommender applications.',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'source_eid' => array(
+          'description' => 'The entity_id for which the prediction is generated. This is usually user id',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'target_eid' => array(
+          'description' => 'The entity_id of the target prediction. This is usually item id.',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'score' => array(
+          'type' => 'float',
+          'size' => 'normal',
+          'not null' => FALSE,
+          'description' => 'The prediction score. Higher score means source prefers target more.',
+        ),
+        'updated' => array(
+          'description' => 'The Unix timestamp this prediction is last changed',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'primary key' => array('id'),
+      'foreign keys' => array(
+        'app_id' => array(
+          'table' => 'recommender_app',
+          'columns' => array('app_id' => 'id'),
+        ),
+      ),
+      // note that this is not unique indexes.
+      'indexes' => array(
+        'index_key' => array('app_id', 'source_eid', 'target_eid'),
+        //'score' => array('score'),
+      ),
+    ),
+
+
+    'recommender_preference_staging' => array(
+      'description' => 'This table stages user-item preference data if it is from a SQL query. Should get purged before app running',
+      'fields' => array(
+        'source_eid' => array(
+          'description' => 'The entity_id of the owner of the preference. This is usually user id',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'target_eid' => array(
+          'description' => 'The entity_id of the target of the preference. This is usually item id.',
+          'type' => 'int',
+          'size' => 'normal',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'score' => array(
+          'type' => 'float',
+          'size' => 'normal',
+          'not null' => FALSE,
+          'description' => 'The preference score. Higher score means source prefers target more.',
+        ),
+        'updated' => array(
+          'description' => 'The Unix timestamp this preference is last changed',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'primary key' => array('source_eid', 'target_eid'),
+      'indexes' => array(
+        //'score' => array('score'),
+        'updated' => array('updated'),
+      ),
+    ),
+  );
+
+  /*// Table used for the slope-one algorithm
+  $schema['recommender_slopeone_dev'] = array(
+    'description' => t('Table used for the slope-one algorithm'),
+    'fields' => array(
+         'app_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '10'),
+         'cheese1_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '10'),
+         'cheese2_id' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'disp-width' => '10'),
+         'count' => array('type' => 'float', 'size' => 'big', 'not null' => FALSE),
+         'dev' => array('type' => 'float', 'size' => 'big', 'not null' => FALSE)),
+    'indexes' => array(
+         'index_key' => array('app_id', 'cheese1_id', 'cheese2_id')),
+  );
+;*/
+  
+  return $schema;
+}
+
+
+/**
+ * Implements hook_update_N().
+ * Make {recommender_app} 'name' field longer.
+ */
+function recommender_update_7001() {
+  db_change_field('recommender_app', 'name', 'name', array(
+    'description' => 'The application that uses the recommender API',
+    'type' => 'varchar',
+    'not null' => TRUE,
+    'length' => 60,
+  ));
+}
+
+/**
+ * Add cron settings to {recommender_app}
+ */
+function recommender_update_7002() {
+  $schema = recommender_schema();
+  db_add_field('recommender_app', 'cron', $schema['recommender_app']['fields']['cron']);
+  db_add_field('recommender_app', 'execution_id', $schema['recommender_app']['fields']['execution_id']);
+}
+
+/**
+ * Implements hook_install().
+ */
+function recommender_install() {
+  async_command_create_command('recommender', 'PingMe', 'Ping recommender server');
+}
+
+/**
+ * Implements hook_enable().
+ */
+function recommender_enable() {
+  async_command_create_command('recommender', 'PingMe', 'Ping recommender server');
+}

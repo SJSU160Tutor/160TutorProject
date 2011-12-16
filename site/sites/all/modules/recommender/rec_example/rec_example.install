@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * @file Installation file for the rec_example module.
+ */
+
+
+/**
+ * Implements hook_install().
+ */
+function rec_example_install() {
+  recommender_app_register(rec_example_apps());
+}
+
+function rec_example_apps() {
+  return array(
+    'rec_example' => array(
+      'title' => st('Recommender API Example on GroupLens data'),
+      'params' => array(
+        'algorithm' => 'item2item',
+        'table' => '{recommender_preference_staging}',
+        'fields' => array('source_eid', 'target_eid', 'score', 'updated'),
+
+        // this would help Views figure out which base table to join. currently not used.
+        'entity_type' => array(
+          'similarity' => array('node', 'node'),
+          'prediction' => array('users', 'node')
+        ),
+        'performance' => 'memory',
+        'preference' => 'score',
+      ),
+    ),
+
+    'rec_example_update' => array(
+      'title' => st('Recommender API Example on GroupLens data (incremental update)'),
+      'params' => array(
+        'algorithm' => 'item2item_increment',
+        'base_app_name' => 'rec_example',
+        'table' => '{recommender_preference_staging}',
+        'fields' => array('source_eid', 'target_eid', 'score', 'updated'),
+        // this would help Views figure out which base table to join. currently not used.
+        'entity_type' => array(
+          'similarity' => array('node', 'node'),
+          'prediction' => array('users', 'node')
+        ),
+        'performance' => 'memory',
+        'preference' => 'score',
+      )
+    ),
+  );
+}
+
+
+function rec_example_disable() {
+  recommender_app_unregister(array('rec_example', 'rec_example_update'));
+}

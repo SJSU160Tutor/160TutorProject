@@ -1,0 +1,326 @@
+<?php
+
+/**
+ * @file
+ * Providing generic recommender system algorithms.
+ */
+
+
+define('TOP_N_LIMIT', 100);
+
+
+///////////////////////    Helper functions    /////////////////////
+
+
+/**
+ * Get the application id from the application name.
+ * @param $app_name
+ * @return the recommender application object.
+ */
+function recommender_app_load($app_name, $idonly = FALSE) {
+  if (!isset($app_name) || empty($app_name)) {
+    return NULL; // should throw an exception.
+  }
+  $query = db_select('recommender_app');
+  if ($idonly) {
+    $query->addField('recommender_app', 'id');
+  }
+  else {
+    $query->fields('recommender_app');
+  }
+  $query->condition('name', $app_name);
+  $app = $query->execute()->fetchAssoc();
+
+  if (!$idonly) {
+    $app['params'] = unserialize($app['params']);
+    return $app;
+  }
+  else {
+    return $app['id'];
+  }
+}
+
+
+/**
+ * Register a recommender application. The most important function you would use.
+ * @param  $apps See documentation for the parameters.
+ * @return void
+ */
+function recommender_app_register($apps) {
+  foreach ($apps as $name => $app) {
+    db_merge('recommender_app')
+      ->key(array('name' => $name))
+      ->fields(array(
+        // app_id will be automatically generated if INSERT.
+        'title' => $app['title'],
+        'params' => serialize($app['params']),
+      ))
+      ->execute();
+  }
+}
+
+function recommender_app_update($app_name, $params) {
+  $app = recommender_app_load($app_name);
+  $new_params = array_merge($app['params'], $params);
+  db_update('recommender_app')
+    ->fields(array('params' => serialize($new_params)))
+    ->condition('id', $app['id'])
+    ->execute();
+}
+
+
+/**
+ * Remove the application. Usually used in calling module's hook_uninstall()
+ * @param $apps the application name to be removed.
+ * @return null
+ */
+function recommender_app_unregister($apps) {
+  if (func_num_args() > 1) {
+    $apps = func_get_args();  // if used as recommender_app_unregister('app1', 'app2', ...);
+  }
+  elseif (!is_array($apps)) {
+    $apps = array($apps);     // if used as recommender_app_unregister('app');
+  }
+  // finally, used as recommender_app_unregister(array('app1', 'app2', ...);
+
+  foreach ($apps as $app) {
+    $app_id = recommender_app_load($app, TRUE);
+    db_query("DELETE FROM {recommender_similarity} WHERE app_id=:app_id", array(':app_id' => $app_id));
+    db_query("DELETE FROM {recommender_prediction} WHERE app_id=:app_id", array(':app_id' => $app_id));
+    db_query("DELETE FROM {recommender_app} WHERE id=:app_id", array(':app_id' => $app_id));
+  }
+}
+
+/**
+ * Return a list of items that are top similar with $id
+ * @param $app_name The $app_name for the depending modules
+ * @param $id usually the $node_id of the target item.
+ * @param $top_n how many similar items to return
+ * @param $test_func optional function to test whether an item satisfy some conditions
+ * @return an array of the most similar items to $id.
+ */
+function recommender_top_similarity($app_name, $id, $top_n, $test_func=NULL) {
+  return _recommender_generic_top($app_name, $id, $top_n, '{recommender_similarity}');
+}
+
+/**
+ * Return a list of items that are top prediction for $id
+ * @param $app_name The $app_name for the depending modules
+ * @param $id usually the $node_id of the target item.
+ * @param $top_n how many predictions to return
+ * @param $test_func optional function to test whether an item satisfy some conditions
+ * @return an array of the most similar items to $id.
+ */
+function recommender_top_prediction($app_name, $id, $top_n, $test_func=NULL) {
+  return _recommender_generic_top($app_name, $id, $top_n, '{recommender_prediction}');
+}
+
+
+function _recommender_generic_top($app_name, $id, $top_n, $table, $test_func=NULL) {
+  $app_id = recommender_app_load($app_name, TRUE);
+  $list = array();
+  $result = db_query_range("SELECT target_eid id, score FROM {$table} WHERE app_id=:app_id AND source_eid=:entity_id
+    ORDER BY score DESC, updated DESC, target_eid ASC", 0, TOP_N_LIMIT, array(':app_id' => $app_id, ':entity_id' => $id));
+
+  while (($item = $result->fetchAssoc()) && count($list) < $top_n) {
+    if ($test_func===NULL || call_user_func($test_func, $item)) {
+      $list[] = $item;
+    }
+  }
+  return $list;
+}
+
+
+
+function recommender_create_command($app_name, $description = NULL) {
+  $command = 'RunRecommender';
+  if ($description == NULL) {
+    $description = "Compute recommendations for $app_name";
+  }
+  // FIXME: what if the given $app_name doesn't exist?
+  $app_id = recommender_app_load($app_name, TRUE);
+  $execution_id = async_command_create_command('recommender', 'RunRecommender', $description, array('id1' => $app_id));
+  if ($execution_id) {
+    db_query('UPDATE {recommender_app} SET execution_id=:id WHERE name=:name', array(':id' => $execution_id, ':name' => $app_name));
+  }
+  drupal_set_message(t('Your request "@description" in the queue. It will be executed asynchronously. Please refresh the page to see the update.', array('@description' => $description)));
+}
+
+
+
+////////////////////////////       DRUPAL RELATED FUNCTIONS          //////////////////////////
+
+
+
+// Implements hook_permission().
+function recommender_permission() {
+  return array(
+    "administer recommender" => array(
+      'title' => t('Administer recommender'),
+      'description' => t('You need this permission for any Recommender API related operations.')
+    ),
+  );
+}
+
+
+// Implements hook_menu().
+function recommender_menu() {
+  $items = array();
+
+  $items['admin/config/recommender'] = array(
+    'title' => 'Recommender',
+    'description' => 'Configuration and trigger recommender modules',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('recommender_settings_form'),
+    'access arguments' => array('administer recommender'),
+    'file' => 'recommender.admin.inc'
+  );
+
+//  $items['recommender/run'] = array(
+//    'title' => 'Running recommender',
+//    'page callback' => 'recommender_run',
+//    'access arguments' => array('administer recommender'),
+//    'type' => MENU_CALLBACK,
+//   );
+  return $items;
+}
+
+
+
+function recommender_cron() {
+  // if cron is null, then never run cron for the app.
+  // else if recommender never get executed (execution_id=null), then run it.
+  // otherwise, run only when last command (c.created) is before current time minus cron.
+  $rows = db_query("SELECT a.name FROM {recommender_app} a LEFT OUTER JOIN {async_command} c ON a.execution_id = c.id 
+  		WHERE cron IS NOT NULL AND (a.execution_id IS NULL OR c.created + a.cron < :current)", array(':current' => time()));
+  foreach ($rows as $row) {
+    recommender_create_command($row->name);
+  } 
+}
+
+
+
+/**
+ * Implements hook_views_api().
+ */
+function recommender_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+/**
+ * Provide default views template for helper modules.
+ * Helper modules can choose either to use "export views" or use this function to generate default views.
+ *
+ * @param $view_name
+ * @param $view_human_name
+ * @param $view_description
+ * @param $base_table   either recommender_similarity or recommender_prediction.
+ * @param $base_entity_type   usually either 'node' or 'users'
+ * @param $base_entity_field  if 'node' then 'title', if 'users' then 'name'
+ * @param $argument_type  either 'node' or 'current_user'
+ * @param $app_name
+ * @return \view
+ */
+function recommender_default_view_template($view_name, $view_human_name, $view_description,
+        $base_table, $base_entity_type, $base_entity_field, $argument_type, $app_name) {
+
+  $view = new view;
+  $view->name = $view_name;
+  $view->description = $view_description;
+  $view->tag = 'recommendation';
+  $view->base_table = $base_table;
+  $view->human_name = $view_human_name;
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = TRUE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = $view_human_name;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '5';
+  $handler->display->display_options['style_plugin'] = 'list';
+  $handler->display->display_options['row_plugin'] = 'fields';
+
+  /* Relationship */
+  $handler->display->display_options['relationships']['target_eid']['id'] = 'target_eid';
+  $handler->display->display_options['relationships']['target_eid']['table'] = $base_table;
+  $handler->display->display_options['relationships']['target_eid']['field'] = 'target_eid';
+  $handler->display->display_options['relationships']['target_eid']['required'] = 1;
+  $handler->display->display_options['relationships']['target_eid']['base_entity_type'] = $base_entity_type;
+
+  /* Field */
+  $handler->display->display_options['fields'][$base_entity_field]['id'] = $base_entity_field;
+  $handler->display->display_options['fields'][$base_entity_field]['table'] = $base_entity_type;
+  $handler->display->display_options['fields'][$base_entity_field]['field'] = $base_entity_field;
+  $handler->display->display_options['fields'][$base_entity_field]['relationship'] = 'target_eid';
+  $handler->display->display_options['fields'][$base_entity_field]['label'] = '';
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['make_link'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['absolute'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['external'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['trim'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['alter']['html'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['element_label_colon'] = 0;
+  $handler->display->display_options['fields'][$base_entity_field]['element_default_classes'] = 1;
+  $handler->display->display_options['fields'][$base_entity_field]['hide_empty'] = 1;
+  $handler->display->display_options['fields'][$base_entity_field]['empty_zero'] = 0;
+  if ($base_entity_type == 'node') {
+    $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  }
+  elseif ($base_entity_type == 'users') {
+    $handler->display->display_options['fields']['name']['link_to_user'] = 1;
+    $handler->display->display_options['fields']['name']['overwrite_anonymous'] = 0;
+  }
+
+  /* Sort criterion */
+  $handler->display->display_options['sorts']['score']['id'] = 'score';
+  $handler->display->display_options['sorts']['score']['table'] = $base_table;
+  $handler->display->display_options['sorts']['score']['field'] = 'score';
+  $handler->display->display_options['sorts']['score']['order'] = 'DESC';
+
+
+  /* Contextual filter */
+  $handler->display->display_options['arguments']['source_eid']['id'] = 'source_eid';
+  $handler->display->display_options['arguments']['source_eid']['table'] = $base_table;
+  $handler->display->display_options['arguments']['source_eid']['field'] = 'source_eid';
+  $handler->display->display_options['arguments']['source_eid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['source_eid']['default_argument_type'] = $argument_type;
+  $handler->display->display_options['arguments']['source_eid']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['source_eid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['source_eid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['source_eid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['source_eid']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['source_eid']['not'] = 0;
+
+  /* Filter criterion: Recommender Application: Application name */
+  $handler->display->display_options['filters']['name']['id'] = 'name';
+  $handler->display->display_options['filters']['name']['table'] = 'recommender_app';
+  $handler->display->display_options['filters']['name']['field'] = 'name';
+  $handler->display->display_options['filters']['name']['value'] = array(
+    $app_name => $app_name,
+  );
+
+  /* Filter criterion */
+  $handler->display->display_options['filters']['score']['id'] = 'score';
+  $handler->display->display_options['filters']['score']['table'] = $base_table;
+  $handler->display->display_options['filters']['score']['field'] = 'score';
+  $handler->display->display_options['filters']['score']['operator'] = '>';
+  $handler->display->display_options['filters']['score']['value']['value'] = '0';
+
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block');
+
+  return $view;
+}

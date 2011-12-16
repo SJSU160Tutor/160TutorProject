@@ -1,0 +1,15 @@
+name = Recommender API example
+description = An example of using Recommender API to generate recommendations.
+package = Recommendation
+
+dependencies[] = recommender
+
+files[] = rec_example.module
+
+core = 7.x
+; Information added by drupal.org packaging script on 2011-10-24
+version = "7.x-4.0-alpha1"
+core = "7.x"
+project = "recommender"
+datestamp = "1319460036"
+

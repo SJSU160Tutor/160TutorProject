@@ -1,0 +1,13 @@
+name = Best Reply
+description = allows users to mark comments as the best reply to their topic.
+package = Other
+core = 7.x
+files[] = bestreply.install
+files[] = bestreply.module
+
+; Information added by drupal.org packaging script on 2011-06-17
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "bestreply"
+datestamp = "1308312208"
+

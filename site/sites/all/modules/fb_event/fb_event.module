@@ -1,0 +1,154 @@
+<?php
+
+define('FB_EVENT_NO_LOGIN', 0);
+define('FB_EVENT_USER_NO_FB', 1);
+define('FB_EVENT_NO_FBC', 2);
+define('FB_EVENT_NO_UID', 3);
+define('FB_EVENT_FULL_CONNECT', 4);
+
+/**
+* Implement hook_menu().
+*/
+function fb_event_menu() {
+	$items = array();
+	$items['admin/config/fb_event'] = array(
+		'title' => 'FBConnect Events Settings',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('fb_event_admin_configure'),
+		'access arguments' => array('administer FBConnect Events'),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'fb_event.admin.inc',
+	);
+	return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function fb_event_permission() {
+	
+	$perms["administer FBConnect Events"] = array(
+      'title' => t('administer FBConnect Events'),
+  );
+  
+	return $perms;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function fb_event_theme($existing, $type, $theme, $path) {
+	return array(
+		'fb_event_main' => array(
+		'template' => 'fb_event_main',
+		'variables' => array('event_id' => 0, 'fbuid' => 0, 'fbc_status' => FB_EVENT_NO_LOGIN, 'members' => array(), 'event_status' => NULL, 'perm_status' => NULL, 'event_form' => array(), 'signup_text' => '', 'total_rsvp' => NULL, 'fb_login_button'))
+	);
+}
+
+/**
+ * Implementation of hook_node_view().
+ */
+function fb_event_node_view($node, $arg) {
+
+	if (!isset($node->field_fbeid) || empty($node->field_fbeid)) { // no event ID
+		return;
+	}
+	
+	if ( module_exists('fb') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.d4fb');
+		fb_event_d4fb_node_view($node, $arg);
+		
+	} else if ( module_exists('fbconnect') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.fbconnect');
+		fb_event_fbconnect_node_view($node, $arg);
+		
+	}
+	
+}
+
+function fb_event_signup_form($form, $form_state, $eid, $fbuid, $status = NULL) {
+// currently uses ajaxSubmit to submit the form
+// TODO: we could possibly just make this work with built-in ahah
+// Either that or forget about ajax submit, shouldn't have a dependency just for that
+	$form = array(
+		'#redirect' => FALSE,
+		'#ajaxsubmit' => TRUE,
+	);
+	$form['event_status'] = array(
+		'#type' => 'radios',
+		'#options' => fb_event_get_status_options(),
+		'#default_value' => $status,
+		/*'#ajax' => array(
+      'callback' => 'fb_event_signup_form_rsvp',
+      'wrapper' => 'fb_event_signup_form_rsvp',
+      'effect' => 'fade',
+      'method' => 'replace',
+    ),
+    '#prefix' => '<div id="fb_event_signup_form_rsvp">',
+  	'#suffix' => '</div>',  	
+  	*/
+	);
+	$form['event_id'] = array(
+		'#type' => 'hidden',
+		'#value' => $eid,
+	);
+	$form['fbuid'] = array(
+		'#type' => 'hidden',
+		'#value' => $fbuid,
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => 'RSVP!',
+		'#attributes' => array('class' => array('use-ajax-submit')),
+	);
+	return $form;
+}
+
+function fb_event_signup_form_rsvp( $form, $form_state){
+  return $form['event_status'];	
+}
+
+function  fb_event_signup_form_submit($form, &$form_state) {
+
+	if ( module_exists('fb') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.d4fb');
+		fb_event_d4fb_signup_form_submit($node, $arg);
+		
+	} else if ( module_exists('fbconnect') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.fbconnect');
+		fb_event_fbconnect_signup_form_submit($node, $arg);
+		
+	}
+	
+}
+
+function fb_event_event_get_members($fb, $eid) {
+	
+	if (!$fb) {
+		return array();
+	}
+	
+	$members = array();
+	
+	if ( module_exists('fb') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.d4fb');
+		$members = fb_event_d4fb_event_get_members($fb, $eid);
+		
+	} else if ( module_exists('fbconnect') ) {
+		
+		module_load_include('inc', 'fb_event', 'fb_event.fbconnect');
+		$members = fb_event_fbconnect_event_get_members($fb, $eid);
+		
+	}
+	
+	return $members;
+}
+
+function fb_event_get_status_options() {
+	return array('attending' => t('Attending'), 'maybe' => t('Maybe attending'), 'declined' => t('Not attending'));
+}

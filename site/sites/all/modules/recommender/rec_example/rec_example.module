@@ -1,0 +1,205 @@
+<?php
+
+/**
+ * This module has three purposes:
+ * 1. Test the performance of Recommender API over 100K, 1M and 10M ratings.
+ * 2. Evaluate different settings of RecAPI for development purposes.
+ * 3. Demonstrate how to use RecAPI to generate recommendations.
+ *
+ * To use this example module, please download GroupLens movies recommendations dataset at:
+ * http://grouplens.org/node/73
+ *
+ * Save the 100K dataset to /tmp/100k, 1M dataset to /tmp/1m, 10M dataset to /tmp/10m.
+ *
+ * @author danithaca (http://drupal.org/user/112233)
+ *
+ */
+
+
+/**
+ * Implements hook_menu();
+ */
+function rec_example_menu() {
+  $items = array();
+
+  $items['admin/config/recommender/rec_example'] = array(
+    'title' => 'Recommender API Example',
+    'description' => 'Configuration and trigger rec_example module.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rec_example_settings_form'),
+    'access arguments' => array('administer recommender'),
+  );
+
+  return $items;
+}
+
+
+function rec_example_settings_form() {
+  $form = array();
+  $form['rebuild'] = array(
+    '#type' => 'submit',
+    '#value' => t('Rebuild'),
+    '#name' => 'rebuild',
+    '#disabled' => FALSE,
+  );
+  $form['refresh'] = array(
+    '#type' => 'submit',
+    '#value' => t('Refresh'),
+    '#name' => 'refresh',
+    '#disabled' => FALSE,
+  );
+  $form['load_file'] = array(
+    '#type' => 'submit',
+    '#value' => t('Load data'),
+    '#name' => 'load_file',
+    '#disabled' => FALSE,
+  );
+  return $form;
+}
+
+
+function rec_example_settings_form_submit($form, &$form_state) {
+  switch ($form_state['clicked_button']['#name']) {
+    case 'rebuild':
+      $new_params = array(
+        //'algorithm' => 'svd'
+        // 'similarity' => 'tanimoto',
+      );
+      //recommender_app_update('rec_example', $new_params);
+      recommender_create_command('rec_example');
+      break;
+    case 'refresh':
+      recommender_create_command('rec_example_update');
+      break;
+    case 'load_file':
+      $batch = array(
+        'title' => t('Importing Data'),
+        'operations' => array(
+          array('rec_example_load_file_small_ram', array('/tmp/data')),
+        ),
+        'finished' => 'rec_example_batch_finish',
+      );
+      batch_set($batch);
+      // only needed if not inside a form _submit handler :
+      batch_process();
+      break;
+  }
+}
+
+
+function rec_example_batch_finish($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message(t('Successfully loaded file.'));
+  }
+  //drupal_goto('admin/config/rec_example');
+}
+
+
+function rec_example_batch_insert($values) {
+  if (empty($values)) return;
+  $query = db_insert('recommender_preference_staging')->fields(array('source_eid', 'target_eid', 'score', 'updated'));
+  foreach ($values as $row) {
+    $query->values($row);
+  }
+  $query->execute();
+}
+
+
+function rec_example_load_file_small_ram($file_name) {
+  db_delete('recommender_preference_staging')->execute();
+  $ratings_file = fopen($file_name, 'r');
+  $count = 0;
+  $values = array();
+  if ($ratings_file) {
+    while (!feof($ratings_file)) {
+      $line = fgets($ratings_file);
+      $values[] = explode("\t", $line);
+      $count ++;
+      if ($count % 500 == 0) {
+        rec_example_batch_insert($values);
+        $values = array();
+      }
+      //db_query("INSERT INTO {recommender_preference_staging}(source_eid, target_eid, score, updated) VALUE (:e1, :e2, :score, :updated)",
+      //    array(':e1' => $fields[0], ':e2' => $fields[1], ':score' => $fields[2], ':updated' => $fields[3]));
+    }
+    //rec_example_batch_insert($values);
+    fclose($ratings_file);
+  }
+  else {
+    drupal_set_message('Cannot load file: '. $file_name);
+  }
+}
+
+function rec_example_load_file_high_performance($file_name = '/tmp/data') { // default file should be grouplens/100k/u1.base
+  db_delete('recommender_preference_staging')->execute();
+  $ratings_str = file_get_contents($file_name, 'r');
+  if ($ratings_str) {
+    $ratings = explode("\n", $ratings_str);
+    $query = db_insert('recommender_preference_staging')->fields(array('source_eid', 'target_eid', 'score', 'updated'));
+    foreach ($ratings as $line){
+      $fields = explode("\t", $line);
+      assert(count($fields) == 4);
+      $query->values(array(
+        'source_eid' => $fields[0],
+        'target_eid' => $fields[1],
+        'score' => $fields[2],
+        'updated' => $fields[3],
+      ));
+    }
+    $query->execute();
+  }
+  else {
+    drupal_set_message('Cannot load file: '. $file_name);
+  }
+}
+
+
+
+// $simpred: 0 - similarity table, 1 - prediction table
+// $un1: 0 - first field is user, 1 - first field is node
+// $un2: 0 - second field is user, 1 - second field is node
+/*function rec_example_debug_table($app_name, $simpred, $un1, $un2) {
+  $app_id = recommender_get_app_id($app_name);
+
+  // load data
+  if ($simpred == 0) {
+    $sql = "SELECT mouse1_id un1, mouse2_id un2, similarity score FROM {recommender_similarity} WHERE app_id=%s ORDER BY mouse1_id, mouse2_id";
+  }
+  else if ($simpred == 1) {
+    $sql = "SELECT mouse_id un1, cheese_id un2, prediction score FROM {recommender_prediction} WHERE app_id=%s ORDER BY mouse_id, cheese_id";
+  }
+  $result = db_query($sql, $app_id);
+
+  // load users
+  $users = array();
+  $u_result = db_query("SELECT uid, name FROM {users}");
+  while ($u = db_fetch_array($u_result)) {
+    $users[$u['uid']] = $u['name'];
+  }
+
+  // load nodes
+  $nodes = array();
+  $n_result = db_query("SELECT nid, title FROM {node}");
+  while ($n = db_fetch_array($n_result)) {
+    $nodes[$n['nid']] = $n['title'];
+  }
+
+  $un1_content = $un1 ? $nodes : $users;
+  $un2_content = $un2 ? $nodes : $users;
+
+  $un1_header = $un1 ? 'node' : 'user';
+  $un2_header = $un2 ? 'node' : 'user';
+  $header = array($un1_header, $un2_header, 'score');
+  $rows = array();
+
+  while($record = db_fetch_array($result)) {
+    $r = array();
+    $r[] = l($un1_content[$record['un1']], "{$un1_header}/{$record['un1']}");
+    $r[] = l($un2_content[$record['un2']], "{$un2_header}/{$record['un2']}");
+    $r[] = $record['score'];
+    $rows[] = $r;
+  }
+
+  return theme('table', $header, $rows);
+}*/
+

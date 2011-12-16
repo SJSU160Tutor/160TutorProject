@@ -1,0 +1,26 @@
+name = Facebook Events
+description = Facebook Events API integration for Drupal
+core = 7.x
+package = "Facebook"
+php = 5.2
+
+version = "7.x-1.0-dev"
+
+dependencies[] = text
+
+
+files[] = fb_event.d4fb.inc
+files[] = fb_event.fbconnect.inc
+files[] = fb_event.admin.inc
+files[] = fb_event_main.tpl.php
+
+
+
+project = "Facebook"
+
+; Information added by drupal.org packaging script on 2011-08-04
+version = "7.x-1.0"
+core = "7.x"
+project = "fb_event"
+datestamp = "1312471316"
+

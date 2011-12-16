@@ -1,0 +1,526 @@
+#reserve_form, #search_form, #box_search_form, #product_form, #presentation_code, #resources {
+    margin: 0;
+    padding: 0;	
+    font: normal 12px Tahoma, Verdana, Arial, sans-serif;
+    display: block;
+    text-align:left;
+}
+
+#planyo_content {
+    margin-bottom:30px;
+}
+
+#planyo_content a, #planyo_plugin_code a {
+    color: #e05817;
+    text-decoration: none;
+}
+
+#planyo_content a:hover, #planyo_plugin_code a:hover {
+    text-decoration: underline;
+}
+
+#reserve_form, #resources, #presentation_code, #product_form {
+    width:100%;
+}
+
+#planyo_content form fieldset, #box_search_form fieldset, #planyo_plugin_code form fieldset {
+    padding: 1em 0;
+    border: none;
+    padding-top: 0;
+}
+
+#planyo_content form fieldset legend, #box_search_form fieldset legend, #planyo_plugin_code form fieldset legend {
+    margin: 0;
+    margin-bottom:3px;
+    padding:0;
+    padding-right: 1em;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+}
+
+#planyo_content form label, #box_search_form label, #planyo_plugin_code form label {
+    display: inline;
+    float: left;
+    clear: left;
+    width: 12em;
+    font-weight: bold;
+    line-height: 1.1;
+    margin-top:2px;
+}
+
+#planyo_content form label em, #box_search_form label em, #planyo_plugin_code form label em {
+    font-weight: bold;
+    font-style: normal;
+    color: red;
+}
+
+#planyo_content form select, #box_search_form select, #planyo_plugin_code form select {
+    margin-bottom:3px;
+}
+
+#planyo_content form input, #box_search_form input, #planyo_plugin_code form input {
+    padding-top: 2px;
+    margin-bottom:3px;
+    line-height: 18px;
+    vertical-align: middle;
+    display:inline;
+}
+
+#planyo_content form input[type="text"], #planyo_plugin_code form input[type="text"] {
+    vertical-align: bottom;
+    width:15em;
+}
+
+#planyo_content form #one_date, #planyo_content form #start_date,#planyo_content form #end_date,
+#box_one_date, #box_start_date,#box_end_date,
+#planyo_plugin_code form #one_date, #planyo_plugin_code form #start_date,#planyo_plugin_code form #end_date {
+    width:8em;
+}
+
+#reserve_form #phone, #reserve_form #mobile_number_param {
+    width:8em;
+}
+
+.page-planyo #planyo_content ul {
+    margin-top:23px;
+}
+
+#planyo_content ul.summary, #planyo_plugin_code ul.summary, #box_search_form ul.summary {
+    line-height:1.5;
+}
+
+#planyo_content ul, #planyo_plugin_code ul, #box_search_form ul {
+    list-style: none;
+    margin: 0;
+    padding:0;
+    text-indent:0;
+}
+
+#planyo_content ul li, #planyo_plugin_code ul li, #box_search_form ul li {
+    list-style: none;
+}
+
+#planyo_content form li, #planyo_plugin_code form li, #resources li, #box_search_form ul {
+    margin: 0 0 .5em 0;
+    clear:both;
+}
+
+#planyo_content .button, #planyo_plugin_code .button, #planyo_content .checkout_button {
+    display:block;
+    margin: 0 0 1em;
+    padding: 0 .5em;
+    height: 24px;
+    line-height:24px;    
+    background: url(button-bg.png);
+    color: white;
+    border: none;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+}
+
+#planyo_content .checkout_button {
+    margin:5px 0 25px;
+    width:160px;
+    text-align:center;
+}
+
+#planyo_content li img, #planyo_plugin_code li img, #box_search_form li img {
+    border: none;
+    vertical-align: middle;	
+}
+
+#planyo_content .left, #planyo_plugin_code .left {
+    display: block;
+    clear: left;
+    float: none;
+}
+
+#planyo_content .right, #planyo_plugin_code .right {
+    display: inline;
+    float: right;
+    clear: right;
+}
+
+#planyo_content img, #planyo_plugin_code img {
+    border:0;
+}
+
+.price_info {
+  font: normal 11px Tahoma, Verdana, Arial, sans-serif;
+  font-size:18px;
+}
+
+.price_info_div 
+{
+  min-height: 32px;
+  width: 100%;
+  background-color: #f0f0f0;
+  clear:both;
+  float:none;
+  margin-top:10px;
+  margin-bottom:5px;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+.price_info_div .price_info_div_content {
+  font-size:13px;
+  padding: 8px;
+}
+
+.price_info_div .title
+{
+  font: bold 20px Tahoma, Verdana, Arial, sans-serif;
+  color:#062245;
+}
+
+.calpicker {
+    margin: 0;
+    line-height:100%;
+    clear:both;
+    border: 1px solid #c0c0c0;
+    border-collapse: collapse;
+    background-color:white;
+    width: 140px;
+}
+
+.calpicker th {
+    background: #d0d0d0;
+    font: normal 11px Tahoma, Verdana, Arial, sans-serif;
+    padding: 2px 3px 2px 3px;
+    border-bottom: 0px;
+}
+
+.calpicker .active_day {
+    background: #bbbbbb;
+    color:white;
+}
+
+.calpicker .reserved {
+    color: red;
+    font-weight: bold;
+}
+
+.calpicker .reserved:hover {
+    cursor:auto;
+    background:white;
+    color:red;
+}
+
+.calpicker .cur_month_day {
+    background: #f0f0f0;
+    color:black;
+}
+
+.calpicker .ext_month_day {
+    background: #ffffff;
+    color: #c5c5c5;
+}
+
+.calpicker td:hover {
+    background: #e77817;
+    color: white;
+    cursor: pointer;
+}
+
+.calpicker td {
+    border: 1px solid #c0c0c0;
+    vertical-align: top;
+    font: normal 10px Tahoma, Verdana, Arial, sans-serif;
+    text-align: center;
+    padding: 2px 3px 2px 3px;
+}
+
+.calpicker caption {
+    padding:2px;
+    background-color:white;
+    border-top:4px solid #c0c0c0;
+    overflow:hidden;
+    font: normal 12px Tahoma, Verdana, Arial, sans-serif;
+    color:black;
+}
+
+.calpicker caption .nav {
+    float:left;
+    padding-right:3px;
+    color: #e05817;
+    text-decoration: none;
+}
+
+#res_error_msg {
+    display:none;
+    color:red;
+    font: bold 12px Tahoma, Verdana, Arial, sans-serif;
+    margin-top:15px;
+}
+
+#res_ok_msg {
+    display:none;
+    font: normal 12px Tahoma, Verdana, Arial, sans-serif;
+}
+
+.stdtable {
+    clear:both;
+    border-collapse:collapse;
+    border: 1px solid #c0c0c0;
+}
+
+.stdtable td {
+    border: 1px solid #c0c0c0;
+    font-size: 10px;
+    text-align: left;
+    padding:2px 5px 2px 5px;
+}
+
+.stdtable th {
+    background: #f0f0f0;
+    padding: 2px 5px 2px 5px;
+    font-size: 11px;
+    text-align: left;
+}
+
+#planyo_content .error, #planyo_plugin_code .error {
+    font: normal 10px Tahoma, Verdana, Arial, sans-serif;
+    color:#cc0000;
+}
+
+#planyo_content .errorbig, #planyo_plugin_code .errorbig {
+    font: bold 12px Tahoma, Verdana, Arial, sans-serif;
+    color:#cc0000;
+    color: red;
+    padding: 10px 0 20px;
+}
+
+#search_results {
+    margin-top:20px;
+}
+
+#resources .resource_preview {
+    display: block;
+    float:left;
+}
+
+#presentation_code .button {
+    clear:left;
+    float:left;
+    margin-top:10px;
+}
+
+#presentation_code .resource_name {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+#presentation_code .calendar_prev {
+    float:left;
+    clear:left;
+    margin-top:20px;
+}
+
+.img_thumb {
+    float:left;
+    width:90px;
+}
+
+.img_thumb_desc {
+    clear:left;
+    float:left;
+    margin-left:5px;
+}
+
+#bg_hider .buttons {
+    padding: 8px;
+}
+
+#bg_hider .buttons .leftbtn {
+    float: left;
+}
+
+#bg_hider .buttons .rightbtn {
+    float: right;
+    margin-right:25px;
+}
+
+#full_img_div #img_info .close {
+    float: right;
+}
+
+#bg_hider .buttons .prev,
+#bg_hider .buttons .next,
+#bg_hider .buttons .play,
+#bg_hider .buttons .pause,
+#bg_hider .buttons .close,
+#full_img_div #img_info .close {
+    display: block;
+    width: 28px;
+    height: 28px;
+}
+
+#full_img_div #on_img_prev,
+#full_img_div #on_img_next {
+	display: block;
+	width: 30px;
+	height: 60px;
+}
+
+#bg_hider .buttons .prev {
+    background: url(https://www.planyo.com/slideshow/btn-prev.png);
+}
+#bg_hider .buttons .prev:hover {
+    background: url(https://www.planyo.com/slideshow/btn-prev-hvr.png);
+}
+#bg_hider .buttons .next {
+    background: url(https://www.planyo.com/slideshow/btn-next.png); 
+}
+#bg_hider .buttons .next:hover {
+    background: url(https://www.planyo.com/slideshow/btn-next-hvr.png);
+}
+#bg_hider .buttons .play {
+    margin-left: 4px; background: url(https://www.planyo.com/slideshow/btn-play.png);
+}
+#bg_hider .buttons .play:hover {
+    background: url(https://www.planyo.com/slideshow/btn-play-hvr.png);
+}
+#bg_hider .buttons .pause {
+    margin-left: 4px; background: url(https://www.planyo.com/slideshow/btn-pause.png); 
+}
+#bg_hider .buttons .pause:hover {
+    background: url(https://www.planyo.com/slideshow/btn-pause-hvr.png);
+}
+#bg_hider .buttons .close {
+    background: url(https://www.planyo.com/slideshow/btn-close.png);
+}
+#bg_hider .buttons .close:hover {
+    background: url(https://www.planyo.com/slideshow/btn-close-hvr.png);
+}
+#full_img_div #img_info .close {
+  background: url(https://www.planyo.com/slideshow/btn-on-close.png); 
+}
+#full_img_div #img_info .close:hover {
+  background: url(https://www.planyo.com/slideshow/btn-on-close-hvr.png); 
+}
+#full_img_div #on_img_prev {
+  background: url(https://www.planyo.com/slideshow/btn-on-img-prev.png); 
+}
+#full_img_div #on_img_prev:hover {
+  background: url(https://www.planyo.com/slideshow/btn-on-img-prev-hvr.png); 
+}
+#full_img_div #on_img_next {
+  background: url(https://www.planyo.com/slideshow/btn-on-img-next.png); 
+}
+#full_img_div #on_img_next:hover {
+  background: url(https://www.planyo.com/slideshow/btn-on-img-next-hvr.png);
+}
+
+#planyo_content .images, #planyo_plugin_code .images {
+    float:right;
+    clear:right;
+    display: inline;
+}
+
+#planyo_content .images img, #planyo_plugin_code .images img {
+    float: right;
+    padding:3px;
+    background-color:black;
+    margin:2px;
+}
+
+#planyo_content .images_left, #planyo_plugin_code .images_left {
+    display: inline;
+    margin-left:10px;
+    width:380px;
+}
+
+#planyo_content .images_left img, #planyo_plugin_code .images_left img {
+    padding:3px;
+    background-color:black;
+    margin:2px;
+    width: 80px;
+    height: 80px;
+}
+
+#planyo_content .images_simple, #planyo_plugin_code .images_simple {
+    float:left;
+}
+
+#planyo_content .image_simple, #planyo_plugin_code .image_simple {
+    float:left;
+    padding:3px;
+    background-color:black;
+    margin:2px;
+}
+
+#planyo_content .section, #planyo_plugin_code .section {
+    margin:25px 0 10px 0;
+}
+
+#planyo_content .section span, #planyo_plugin_code .section span {
+    font-size: 14px;
+    color: black;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 16px; 
+    font-weight: bold;
+}
+
+#planyo_content #cancel_reason, #planyo_plugin_code #cancel_reason {
+    width:100%;
+    height:80px;
+}
+
+#planyo_mobile_switch {
+    margin-top:20px;
+}
+
+#planyo_content .hourglass_img, #planyo_plugin_code .hourglass_img {
+    margin-top:40px;
+    margin-left:40px;
+    height:24px;
+    width:24px;
+    background:transparent url(hourglass.gif) no-repeat scroll 0 0;
+}
+
+.result_ranges {
+    clear:both;
+    display:block;
+}
+
+.result_range {
+    float:left;
+    font-size:10px;
+    color:#666666;
+    margin-left:6px;
+    padding:2px 4px 2px 4px;
+    margin:0 3px 3px 3px;
+    background-color:#f0f0f0;
+    border-radius:3px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+}
+
+.shopping_total {
+    font-size:13px;
+}
+
+#product_form .product_imgs {
+  min-height:86px;
+}
+
+#product_form .product_desc {
+font-style:italic;
+color:#777777;
+}
+
+#product_form .product_block {
+clear:both;
+}
+
+#product_form #row_bulk nobr {
+    display:inline-block;
+}
+

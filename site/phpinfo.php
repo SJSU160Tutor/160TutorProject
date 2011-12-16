@@ -1,0 +1,1 @@
+<HTML><HEAD><TITLE>Form Results/Using Strings</TITLE></HEAD><BODY><?phpphpinfo();?></BODY></HTML>

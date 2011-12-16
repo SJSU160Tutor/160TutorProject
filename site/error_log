@@ -1,0 +1,75 @@
+[03-Nov-2011 17:10:38] PHP Warning:  require_once(/home7/cssjsuor/public_html/160fall2011sec2group3/includes/session.inc) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/authorize.php on line 63
+[03-Nov-2011 17:10:38] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required '/home7/cssjsuor/public_html/160fall2011sec2group3/includes/session.inc' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/authorize.php on line 63
+[03-Nov-2011 20:50:32] PHP Warning:  require_once(facebook.php) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 20:50:32] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required 'facebook.php' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 20:53:31] PHP Warning:  require_once(1) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 20:53:31] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required '1' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 20:53:55] PHP Warning:  require_once(1) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 20:53:55] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required '1' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 3
+[03-Nov-2011 19:54:51] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:55:06] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:55:06] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:55:51] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:55:52] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:11] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:11] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:13] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:14] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:28] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 19:56:28] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:01:56] PHP Warning:  require_once(1) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 4
+[03-Nov-2011 21:01:56] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required '1' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 4
+[03-Nov-2011 21:02:56] PHP Warning:  require_once(1) [<a href='function.require-once'>function.require-once</a>]: failed to open stream: No such file or directory in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 4
+[03-Nov-2011 21:02:56] PHP Fatal error:  require_once() [<a href='function.require'>function.require</a>]: Failed opening required '1' (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home7/cssjsuor/public_html/160fall2011sec2group3/fbTest.php on line 4
+[03-Nov-2011 20:50:14] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:50:14] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:51:11] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:51:12] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:51:17] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:51:34] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:51:34] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:07] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:26] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:27] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:38] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:38] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:47] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:48] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:56] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:57:56] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:58:16] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 20:58:17] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:01:33] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:01:34] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:03:36] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:03:36] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:04:11] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:04:12] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:11:35] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:11:35] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:14:19] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[03-Nov-2011 21:14:20] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:17:54] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:18:05] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:18:09] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:18:24] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:20:44] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:20:45] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:21:23] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:21:29] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[05-Nov-2011 02:21:29] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[06-Nov-2011 01:58:38] PHP Fatal error:  Unsupported operand types in /home7/cssjsuor/public_html/160fall2011sec2group3/includes/form.inc on line 2525
+[29-Nov-2011 23:35:56] PHP Parse error:  syntax error, unexpected $end, expecting ')' in /home/mikeche1/public_html/tutor3/modules/field/field.form.inc on line 226
+[29-Nov-2011 23:36:04] PHP Warning:  Unterminated comment starting line 1085 in /home/mikeche1/public_html/tutor3/modules/filter/filter.module on line 1085
+[29-Nov-2011 23:36:04] PHP Fatal error:  fatal flex scanner internal error--end of buffer missed in /home/mikeche1/public_html/tutor3/modules/filter/filter.module on line 1085
+[29-Nov-2011 23:36:33] PHP Parse error:  syntax error, unexpected $end, expecting T_VARIABLE or '$' in /home/mikeche1/public_html/tutor3/modules/node/node.module on line 2859
+[29-Nov-2011 23:36:57] PHP Parse error:  syntax error, unexpected $end in /home/mikeche1/public_html/tutor3/modules/rdf/rdf.module on line 111
+[01-Dec-2011 22:18:13] PHP Parse error:  syntax error, unexpected $end in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 7
+[01-Dec-2011 22:18:47] PHP Parse error:  syntax error, unexpected '{' in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 5
+[01-Dec-2011 22:19:19] PHP Parse error:  syntax error, unexpected '{' in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 5
+[02-Dec-2011 15:44:15] PHP Parse error:  syntax error, unexpected '}' in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 35
+[02-Dec-2011 15:45:14] PHP Parse error:  syntax error, unexpected '}' in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 37
+[02-Dec-2011 15:55:32] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 23
+[02-Dec-2011 19:49:27] PHP Parse error:  syntax error, unexpected T_STRING in /home/mikeche1/public_html/tutor3/modules/php/php.module(74) : eval()'d code on line 32
+[05-Dec-2011 23:01:05] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0
+[05-Dec-2011 23:01:05] PHP Fatal error:  Exception thrown without a stack frame in Unknown on line 0

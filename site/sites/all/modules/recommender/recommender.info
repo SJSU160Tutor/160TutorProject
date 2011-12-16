@@ -1,0 +1,20 @@
+name = Recommender API
+description = Generic purpose recommender system algorithms and APIs.
+package = Recommendation
+core = 7.x
+
+dependencies[] = async_command
+dependencies[] = views
+
+files[] = recommender.module
+files[] = recommender.views.inc
+files[] = recommender.views_default.inc
+files[] = recommender.admin.inc
+files[] = recommender.test
+
+; Information added by drupal.org packaging script on 2011-10-24
+version = "7.x-4.0-alpha1"
+core = "7.x"
+project = "recommender"
+datestamp = "1319460036"
+

@@ -1,0 +1,116 @@
+<?php
+
+class RecommenderTestCase extends DrupalWebTestCase {
+
+  public function getInfo() {
+    return array(
+      'name' => t('Recommender API basic test'),
+      'description' => t('Test functions of Recommender API'),
+      'group' => t('Recommendation'),
+    );
+  }
+
+  public function setUp() {
+    //parent::setUp('recommender', 'async_command');
+    parent::setUp('recommender');
+
+    // grouplens data, (Resnick et al, 1994)
+    db_truncate('recommender_preference_staging');
+    db_query("INSERT INTO {recommender_preference_staging}(source_eid, target_eid, score) VALUES
+        (1,1,1),(1,2,5),(1,4,2),(1,5,4),
+        (2,1,4),(2,2,2),(2,4,5),(2,5,1),(2,6,2),
+        (3,1,2),(3,2,4),(3,3,3),(3,6,5),
+        (4,1,2),(4,2,4),(4,4,5),(4,5,1)");
+
+    recommender_app_register($this->getApps());
+  }
+  
+  public function tearDown() {
+    //db_truncate('recommender_preference_staging');
+    //recommender_app_unregister(array_keys($this->getApps()));
+    parent::tearDown(); // note: has to call this, or otherwise it'll cause exceptions.
+  }
+  
+  
+  /*public function assertEqualX($first, $second, $message = '', $group = 'Other') {
+    $diff = $first - $second;
+    return $this->assertTrue(!is_nan($first) && !is_nan($second) && abs($diff)<0.0001, $message, $group);
+  }*/
+
+  private function getApps() {
+    return array(
+      'test_item2item' => array(
+        'title' => t('Test recommender item2item'),
+        'params' => array(
+          'algorithm' => 'item2item',
+          'table' => '{recommender_preference_staging}',
+          'fields' => array('source_eid', 'target_eid', 'score', 'updated'),
+          'entity_type' => array(
+            'similarity' => array('node', 'node'),
+            'prediction' => array('users', 'node')
+          ),
+          'performance' => 'memory',
+          'preference' => 'score',
+        )
+      ),
+      'test_user2user' => array(
+        'title' => t('Test recommender user2user'),
+        'params' => array(
+          'algorithm' => 'user2user',
+          'table' => '{recommender_preference_staging}',
+          'fields' => array('source_eid', 'target_eid', 'score', 'updated'),
+          'entity_type' => array(
+            'similarity' => array('node', 'node'),
+            'prediction' => array('users', 'node')
+          ),
+          'performance' => 'database',
+          'preference' => 'score',
+        )
+      ),
+    );
+  }
+
+  // test basic app functions
+  function testAppFunctions() {
+    $id1 = recommender_app_load('test_item2item', TRUE);
+    $id2 = db_query('SELECT id FROM {recommender_app} WHERE name=:name', array(':name' => 'test_item2item'))->fetchField();
+    $this->assertEqual($id1, $id2);
+
+    $app = recommender_app_load('test_user2user');
+    $this->assertEqual($app['params']['performance'], 'database');
+    recommender_app_update('test_user2user', array('performance' => 'memory'));
+    $app = recommender_app_load('test_user2user');
+    $this->assertEqual($app['params']['performance'], 'memory');
+    recommender_app_update('test_user2user', array('preference' => 'database'));
+  }
+
+
+  /*function testItem2Item() {
+    $app_id = recommender_app_load('test_item2item', TRUE);
+    recommender_create_command('test_item2item');
+    echo shell_exec(drupal_get_path('module', 'recommender') .'/run.sh');
+
+    $rows = db_query('SELECT * FROM {recommender_similarity} WHERE app_id=:app_id', array(':app_id' => $app_id));
+    $this->assertTrue($rows->rowCount() > 0);
+
+    $rows = db_query('SELECT * FROM {recommender_prediction} WHERE app_id=:app_id', array(':app_id' => $app_id));
+    $this->assertTrue($rows->rowCount() > 0);
+  }*/
+
+  /*function testUser2User() {
+    $app_id = recommender_app_load('test_user2user', TRUE);
+    recommender_create_command('test_user2user');
+    echo shell_exec(drupal_get_path('module', 'recommender') .'/run.sh');
+
+    $rows = db_query('SELECT * FROM {recommender_similarity} WHERE app_id=:app_id', array(':app_id' => $app_id));
+    $this->assertTrue($rows->rowCount() > 0);
+
+    $rows = db_query('SELECT * FROM {recommender_prediction} WHERE app_id=:app_id', array(':app_id' => $app_id));
+    $this->assertTrue($rows->rowCount() > 0);
+  }*/
+
+  function testCron() {
+    // do nothing for now.
+  }
+}
+
